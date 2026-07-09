@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kanban</title>
+    <link href="https://cdn.jsdelivr.net/gh/microsoft/cascadia-code@master/dist/woff2/CascadiaCode.woff2" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        body {
+            font-family: 'Cascadia Code', monospace;
+        }
+    </style>
+</head>
+<body class="h-screen m-0 flex flex-col overflow-hidden bg-gray-50">
+<div class="flex flex-col min-h-screen">
+    <div th:insert="~{fragments/header :: main-header}"></div>
+
+    <div class="flex flex-1 overflow-hidden">
+        <div class="min-w-[250px] border-r border-gray-200 overflow-y-auto">
+            <div class="flex justify-between items-center px-3 pt-2">
+                <span class="text-gray-400 text-sm font-medium">проекты</span>
+                <button onclick="document.getElementById('modal-create-project').classList.remove('hidden')"
+                        class="transition-colors p-1 rounded-md hover:bg-gray-100 text-gray-500 hover:text-green-600">
+                    <img src="/plus.svg" class="w-5 h-5">
+                </button>
+            </div>
+            <div th:if="${not #lists.isEmpty(projects)}" class="space-y-1">
+                <div id="project-list" class="space-y-1">
+                    <a th:each="ws : ${projects}"
+                       th:href="@{/project?id={id}(id=${ws.id})}"
+                       class="flex items-center gap-3 px-3 py-2 transition-colors hover:bg-gray-100"
+                       th:classappend="${selectedProject != null and ws.id == selectedProject.id} ? 'bg-green-400 text-white hover:bg-green-300' : 'text-gray-700'">
+                        <span class="font-medium truncate" th:text="${ws.name}">ИМЯ_ПРОЕКТА</span>
+                    </a>
+                </div>
+            </div>
+            <p th:if="${#lists.isEmpty(projects)}" class="px-3 text-gray-500">нет активных проектов</p>
+        </div>
+
+        <div class="flex-1 p-4 overflow-x-auto overflow-y-auto">
+            <th:block th:if="${selectedProject != null and selectedProject.id != null}">
+                <div class="flex gap-1 p-3">
+                    <div class="flex gap-1 flex-1">
+                        <h2 class="text-3xl pr-2" th:text="${selectedProject.name}">ТЕКУЩЕЕ ИМЯ ПРОЕКТА</h2>
+                        <button onclick="document.getElementById('modal-create-project').classList.remove('hidden')"
+                                class="w-[36px] pl-2 transition-colors p-1 rounded-md hover:bg-gray-100 text-gray-500 hover:text-green-600">
+                            <img src="/info.svg" class="w-5 h-5">
+                        </button>
+                        <button onclick="document.getElementById('modal-create-column').classList.remove('hidden')"
+                                class="w-[36px] pl-2 transition-colors p-1 rounded-md hover:bg-gray-100 text-gray-500 hover:text-green-600">
+                            <img src="/plus_board.svg" class="w-5 h-5">
+                        </button>
+                    </div>
+                </div>
+                <div id="board_list" class="flex gap-4">
+                    <div th:each="column : ${boards}"
+                         class="w-[300px] flex-shrink-0 bg-white rounded-lg shadow-md p-4 flex flex-col h-full">
+                        <div class="flex w-full items-center gap-2">
+                            <h3 class="text-lg pl-2 flex-1 min-w-0 truncate" th:text="${column.name}">НАЗВАНИЕ ДОСКИ</h3>
+                            <div class="flex gap-1 flex-shrink-0">
+                                <button onclick="document.getElementById('modal-info').classList.remove('hidden')"
+                                        class="w-[36px] h-[36px] flex items-center justify-center transition-colors rounded-md hover:bg-gray-100 text-gray-500 hover:text-blue-600">
+                                    <img src="/info.svg" class="w-5 h-5" alt="info">
+                                </button>
+                                <button onclick="document.getElementById('modal-create-task').classList.remove('hidden')"
+                                        class="w-[36px] h-[36px] flex items-center justify-center transition-colors rounded-md hover:bg-gray-100 text-gray-500 hover:text-green-600">
+                                    <img src="/plus_note.svg" class="w-5 h-5" alt="add task">
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <div id="task_list">
+                            <div th:each="task : ${column.issues}"
+                                 ondblclick="document.getElementById('modal-Wcreate-project').classList.remove('hidden')"
+                                 class="flex flex-col p-2 rounded hover:bg-gray-100 transition-colors border-b border-gray-200 h-[7rem]">
+                                <span class="font-medium break-words truncate min-w-0" th:text="${task.name}">ЗАДАЧА</span>
+                                <div class="flex-1">
+                                    <span class="text-sm text-gray-400 line-clamp-2 text-justify break-words" th:text="${task.description}">ОПИСАНИЕ</span>
+                                </div>
+                                <div class="flex gap-2 pt-2 mt-auto">
+                                    <img src="/calendar.svg" class="w-4 h-4 pt-1">
+                                    <span class="text-sm text-gray-400" th:text="${#temporals.format(task.createdAt, 'E, MMM d')}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${#lists.isEmpty(column.issues)}" class="text-gray-400 text-sm  pl-2">
+                            нет задач
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+
+            <div th:if="${selectedProject != null and selectedProject.id == null}" class="p-6 text-gray-600">
+                выберите рабочее пространство
+            </div>
+        </div>
+    </div>
+</div>
+<div th:insert="~{fragments/create_modals :: create-project-modal}"></div>
+<div th:insert="~{fragments/create_modals :: create-column-modal}"></div>
+<div th:insert="~{fragments/create_modals :: create-task-modal}"></div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Вход</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen flex items-center justify-center bg-gray-50">
+<div class="bg-white p-8 rounded-lg shadow-md w-80">
+    <form action="/login" method="post" class="space-y-4">
+        <div>
+            <input type="text" name="username" class="w-full mt-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="user"/>
+        </div>
+        <div>
+            <input type="password" name="password" class="w-full mt-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="1111"/>
+        </div>
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors">Войти</button>
+    </form>
+</div>
+</body>
+</html>

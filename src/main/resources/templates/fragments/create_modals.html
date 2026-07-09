@@ -1,0 +1,74 @@
+<div th:fragment="create-project-modal" id="modal-create-project"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+     xmlns:hx-on="http://www.w3.org/1999/xhtml">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg ">Новый проект</h3>
+            <button onclick="document.getElementById('modal-create-project').classList.add('hidden')" class="text-gray-500 hover:text-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form hx-post="/hx/v1/projects" hx-target="#project-list" hx-swap="beforeend" hx-on:after-request="this.reset(); document.getElementById('modal-create-project').classList.add('hidden')">
+            <label class="block text-sm text-gray-400 mb-1">Название проекта</label>
+            <input type="text" name="name" required class="w-full border rounded px-3 py-2" placeholder="Новый проект">
+            <div class="flex gap-2 mt-4 justify-end">
+                <button type="button" onclick="document.getElementById('modal-create-project').classList.add('hidden')" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Отмена</button>
+                <button type="submit" class="px-4 py-2 bg-green-400 text-white rounded hover:bg-green-300">Создать</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<div th:fragment="create-column-modal" id="modal-create-column"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+     xmlns:hx-on="http://www.w3.org/1999/xhtml">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg ">Новая доска</h3>
+            <button onclick="document.getElementById('modal-create-column').classList.add('hidden')" class="text-gray-500 hover:text-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form hx-post="/hx/v1/boards" hx-target="#column-list" hx-swap="beforeend" hx-on:after-request="this.reset(); document.getElementById('modal-create-column').classList.add('hidden')">
+            <label class="block text-sm text-gray-400 mb-1">Название доски</label>
+            <input type="text" name="name" required class="w-full border rounded px-3 py-2" placeholder="Новая доска">
+            <div class="flex gap-2 mt-4 justify-end">
+                <button type="button" onclick="document.getElementById('modal-create-column').classList.add('hidden')" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Отмена</button>
+                <button type="submit" class="px-4 py-2 bg-green-400 text-white rounded hover:bg-green-300">Создать</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<div th:fragment="create-task-modal" id="modal-create-task"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+     xmlns:hx-on="http://www.w3.org/1999/xhtml">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg ">Новая задача</h3>
+            <button onclick="document.getElementById('modal-create-task').classList.add('hidden')" class="text-gray-500 hover:text-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form hx-post="/hx/v1/tasks" hx-target="#task-list" hx-swap="beforeend" hx-on:after-request="this.reset(); document.getElementById('modal-create-task').classList.add('hidden')">
+            <label class="block text-sm text-gray-400 mb-1">Название задачи</label>
+            <input type="text" name="name" required class="w-full border rounded px-3 py-2" placeholder="Новая задача">
+            <label class="block text-sm text-gray-400 mb-1">Описание задачи</label>
+            <input type="text" name="name" required class="w-full border rounded px-3 py-2" placeholder="Описание задачи">
+            <div class="flex gap-2 mt-4 justify-end">
+                <button type="button" onclick="document.getElementById('modal-create-task').classList.add('hidden')" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Отмена</button>
+                <button type="submit" class="px-4 py-2 bg-green-400 text-white rounded hover:bg-green-300">Создать</button>
+            </div>
+        </form>
+    </div>
+</div>

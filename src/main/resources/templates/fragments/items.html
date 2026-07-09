@@ -1,0 +1,11 @@
+<a th:fragment="project-item"
+   th:href="@{/project?id={id}(id=${project.id})}"
+   class="flex items-center gap-3 px-3 py-2 transition-colors hover:bg-gray-100">
+    <span class="font-medium truncate" th:text="${project.name}">НОВЫЙ ПРОЕКТ</span>
+</a>
+
+<a th:fragment="project-item"
+   th:href="@{/project?id={id}(id=${project.id})}"
+   class="flex items-center gap-3 px-3 py-2 transition-colors hover:bg-gray-100">
+    <span class="font-medium truncate" th:text="${project.name}">НОВЫЙ ПРОЕКТ</span>
+</a>
