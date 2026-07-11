@@ -33,45 +33,49 @@
 
 ```mermaid
 erDiagram
-    USERS {
+    EntityProject {
         Long id PK
-        String username UK
-        String password
+        String name "NOT NULL"
+        LocalDateTime createdAt "NOT NULL"
     }
 
-    ROLES {
+    EntityColumn {
         Long id PK
-        String name UK
+        int position "NOT NULL"
+        String name "NOT NULL"
+        Long project_id "NOT NULL"
     }
 
-    USER_ROLES {
-        Long user_id FK
-        Long role_id FK
-    }
-
-    PROJECTS {
+    EntityIssue {
         Long id PK
-        String name
-        Long user_id FK
-    }
-
-    BOARDS {
-        Long id PK
-        String name
-        Long project_id FK
-    }
-
-    TASKS {
-        Long id PK
-        String name
+        String name "NOT NULL"
         String description
-        LocalDateTime createdAt
-        Long board_id FK
+        String status "NOT NULL"
+        LocalDateTime createdAt "NOT NULL"
+        LocalDateTime dueDate
+        Long column_id "NOT NULL"
+        Long creator_id "NOT NULL"
     }
 
-    USERS ||--o{ USER_ROLES : has
-    ROLES ||--o{ USER_ROLES : assigned_to
-    PROJECTS ||--o{ USERS : contains
-    PROJECTS ||--o{ BOARDS : contains
-    BOARDS ||--o{ TASKS : has
+    EntityUser {
+        Long id PK
+        String username "UNIQUE, NOT NULL"
+        String name "NOT NULL"
+        String surname "NOT NULL"
+        String password_hash "NOT NULL"
+        String email "UNIQUE, NOT NULL"
+    }
+
+    EntityProjectMembers {
+        Long id PK
+        String role "NOT NULL"
+        Long user_id "NOT NULL"
+        Long project_id "NOT NULL"
+    }
+
+    EntityProject ||--o{ EntityColumn : ""
+    EntityColumn ||--o{ EntityIssue : ""
+    EntityIssue }o--|| EntityUser : ""
+    EntityProject ||--o{ EntityProjectMembers : ""
+    EntityUser ||--o{ EntityProjectMembers : ""
 ```
