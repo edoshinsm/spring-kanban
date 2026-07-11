@@ -26,6 +26,9 @@ public class EntityIssue {
     @Column(nullable = false)
     private String status;
 
+    @Column(nullable = false)
+    private int position;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 

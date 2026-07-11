@@ -18,11 +18,14 @@ public class EntityUser {
     @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
 
     @Column(nullable = false)
-    private String surname;
+    private String patronymic;
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
