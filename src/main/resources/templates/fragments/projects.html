@@ -1,0 +1,93 @@
+<div th:fragment="projects-list">
+  <div th:if="${not #lists.isEmpty(projects)}" class="space-y-1">
+    <div id="project-list" class="space-y-1">
+      <th:block th:each="project : ${projects}">
+        <a th:id="'project-item-' + ${project.id}" th:replace="~{fragments/projects :: project-item(project=${project})}"></a>
+      </th:block>
+    </div>
+  </div>
+</div>
+
+<a th:fragment="project-item(project)"
+   th:href="@{/project?id={id}(id=${project.id})}"
+   th:class="${selectedProject != null and project.id == selectedProject.id} ? 'flex items-center gap-3 px-3 py-2 transition-colors bg-green-400 text-white hover:bg-green-300' : 'flex items-center gap-3 px-3 py-2 transition-colors hover:bg-gray-100 text-gray-700'">
+  <span class="font-medium truncate" th:text="${project.name}">НОВЫЙ ПРОЕКТ</span>
+</a>
+
+<div th:fragment="create-project-modal" id="modal-create-project"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+     xmlns:hx-on="http://www.w3.org/1999/xhtml">
+  <div class="bg-white rounded-lg shadow-lg p-6 min-w-[500px] max-h-[650px] overflow-y-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg ">новый проект</h3>
+      <button onclick="document.getElementById('modal-create-project').classList.add('hidden')" class="text-gray-500 hover:text-red-500">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <form hx-post="/hx/v1/projects/new" hx-target="#project-list" hx-swap="beforeend" hx-on:after-request="this.reset(); document.getElementById('modal-create-project').classList.add('hidden')">
+      <label class="block text-sm text-gray-400 mb-1 pt-1">название проекта</label>
+      <input type="text" name="name" required class="w-full border rounded px-3 py-2">
+      <label class="block text-sm text-gray-400 mb-1 pt-1">описание проекта</label>
+      <textarea type="text" name="description" class="w-full border rounded px-3 py-2"></textarea>
+      <div class="flex gap-2 mt-4 justify-between">
+        <button type="button" onclick="document.getElementById('modal-create-project').classList.add('hidden')" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">отмена</button>
+        <button type="submit" class="px-4 py-2 bg-green-400 text-white rounded hover:bg-green-300">создать</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div th:fragment="info-project-modal" id="modal-info-project"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+     xmlns:hx-on="http://www.w3.org/1999/xhtml">
+  <div class="bg-white rounded-lg shadow-lg p-6 min-w-[500px] max-h-[650px] overflow-y-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg ">параметры проекта</h3>
+      <button onclick="document.getElementById('modal-info-project').classList.add('hidden')" class="text-gray-500 hover:text-red-500">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <form
+            hx-put="/hx/v1/projects/update"
+            hx-target="#project-list"
+            hx-swap="outerHTML"
+            hx-on:htmx:after-request="document.getElementById('modal-info-project').classList.add('hidden');">
+      <div id="project-info-content" class="flex flex-col h-full"></div>
+      <div class="flex gap-2 mt-4 justify-between">
+        <button  type="button"
+                 th:if="${selectedProject != null}"
+                 hx-delete="/hx/v1/projects/delete"
+                 th:hx-vals="|{'projectId': '${selectedProject.id}'}|"
+                 hx-target="#project-list"
+                 hx-on:htmx:after-request="window.location.href = '/'"
+                 onclick="document.getElementById('modal-info-project').classList.add('hidden')" class="px-4 py-2 bg-red-400 text-white rounded hover:bg-red-300">удалить</button>
+        <div class="flex gap-1">
+          <button type="button" onclick="document.getElementById('modal-info-project').classList.add('hidden')" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">отмена</button>
+          <button type="submit" onclick="document.getElementById('modal-info-project').classList.add('hidden')" class="px-4 py-2 bg-green-400 text-white rounded hover:bg-green-300">сохранить</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div th:fragment="project-info-content">
+  <input type="hidden" name="projectId" th:value="${project.id}">
+  <label class="block text-sm text-gray-400 mb-1 pt-1">название проекта</label>
+  <input type="text" name="name" class="w-full border rounded px-3 py-2" th:value="${project.name}">
+  <label class="block text-sm text-gray-400 mb-1 pt-1">описание проекта</label>
+  <textarea name="description" class="w-full h-full border rounded px-3 py-2" th:text="${project.description}"></textarea>
+  <div class="flex gap-2 pt-2 mt-auto">
+    <img src="/calendar.svg" class="w-4 h-4 pt-1">
+    <label class="text-sm text-gray-400">дата создания:</label>
+    <label class="text-sm text-gray-400" th:text="${#temporals.format(project.createdAt, 'E, MMM d')}"></label>
+  </div>
+  <div class="flex gap-2 pt-2 mt-auto">
+    <img src="/calendar_edit.svg" class="w-4 h-4 pt-1">
+    <label class="text-sm text-gray-400">дата последнего изменения:</label>
+    <label class="text-sm text-gray-400" th:text="${project.updatedAt != null ? #temporals.format(project.updatedAt, 'E, MMM d') : '---'}"></label>
+  </div>
+</div>

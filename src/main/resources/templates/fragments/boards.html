@@ -1,0 +1,39 @@
+<div th:fragment="boards-list">
+    <div id="board_list" class="flex gap-4">
+        <div th:each="column : ${boards}"
+             class="w-[300px] flex-shrink-0 bg-white rounded-lg shadow-md p-4 flex flex-col h-full">
+            <div class="flex w-full items-center gap-2">
+                <h3 class="text-lg pl-2 flex-1 min-w-0 truncate" th:text="${column.name}">НАЗВАНИЕ ДОСКИ</h3>
+                <div class="flex gap-1 flex-shrink-0">
+                    <button onclick="document.getElementById('modal-column-info').classList.remove('hidden')"
+                            class="w-[36px] h-[36px] flex items-center justify-center transition-colors rounded-md hover:bg-gray-100 text-gray-500 hover:text-blue-600">
+                        <img src="/info.svg" class="w-5 h-5" alt="info">
+                    </button>
+                    <button onclick="document.getElementById('modal-create-task').classList.remove('hidden')"
+                            class="w-[36px] h-[36px] flex items-center justify-center transition-colors rounded-md hover:bg-gray-100 text-gray-500 hover:text-green-600">
+                        <img src="/note_plus.svg" class="w-5 h-5" alt="add task">
+                    </button>
+                </div>
+            </div>
+
+
+            <div id="task_list">
+                <div th:each="task : ${column.issues}"
+                     ondblclick="document.getElementById('modal-create-issue').classList.remove('hidden')"
+                     class="flex flex-col p-2 rounded hover:bg-gray-100 transition-colors border-b border-gray-200 h-[7rem]">
+                    <span clasRs="font-medium break-words truncate min-w-0" th:text="${task.name}">ЗАДАЧА</span>
+                    <div class="flex-1">
+                        <span class="text-sm text-gray-400 line-clamp-2 text-justify break-words" th:text="${task.description}">ОПИСАНИЕ</span>
+                    </div>
+                    <div class="flex gap-2 pt-2 mt-auto">
+                        <img src="/calendar.svg" class="w-4 h-4 pt-1">
+                        <span class="text-sm text-gray-400" th:text="${#temporals.format(task.createdAt, 'E, MMM d')}"></span>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(column.issues)}" class="text-gray-400 text-sm  pl-2">
+                нет задач
+            </div>
+        </div>
+    </div>
+</div>
