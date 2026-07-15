@@ -1,0 +1,120 @@
+<div th:fragment="columns-list">
+    <div id="columns-list" class="flex gap-4">
+        <div th:each="column : ${columns}">
+            <div th:id="'column-item-' + ${column?.id}" th:insert="~{fragments/columns :: column-item}"></div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="column-item" class="w-[300px] flex-shrink-0 bg-white rounded-lg shadow-md p-4 flex flex-col h-full">
+    <div class="flex w-full items-center gap-2">
+        <h3 class="text-lg pl-2 flex-1 min-w-0 truncate" th:text="${column.name}">НАЗВАНИЕ ДОСКИ</h3>
+        <div class="flex gap-1 flex-shrink-0">
+            <button
+                    hx-get="/hx/v1/columns/info"
+                    th:attr="hx-vals='{&quot;columnId&quot;:' + ${column.id} + '}'"
+                    hx-target="#column-info-content"
+                    hx-trigger="click"
+                    onclick="document.getElementById('modal-info-column').classList.remove('hidden')"
+                    class="w-[36px] pl-2 transition-colors p-1 rounded-md hover:bg-gray-100 text-gray-500 hover:text-green-600">
+                <img src="/info.svg" class="w-5 h-5">
+            </button>
+            <button th:onclick="|var m=document.getElementById('modal-create-issue'); m.classList.remove('hidden'); m.querySelector('[name=column_id]').value=${column.id};|"
+                    class="w-[36px] h-[36px] flex items-center justify-center transition-colors rounded-md hover:bg-gray-100 text-gray-500 hover:text-green-600">
+                <img src="/note_plus.svg" class="w-5 h-5" alt="add task">
+            </button>
+        </div>
+    </div>
+
+    <div id="issue_list">
+        <div th:insert="~{fragments/issues :: issue-list(columnId=${column.id}, issues=${column.issues})}"></div>
+    </div>
+</div>
+
+<div th:fragment="create-column-modal" id="modal-create-column"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white rounded-lg shadow-lg p-6 min-w-[500px] max-h-[650px] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg ">новая колонка</h3>
+            <button onclick="document.getElementById('modal-create-column').classList.add('hidden')" class="text-gray-500 hover:text-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form hx-post="/hx/v1/columns/new" hx-target="#columns-list" hx-swap="beforeend"
+              hx-on--after-request="this.reset(); document.getElementById('modal-create-column').classList.add('hidden')">
+            <input type="hidden" name="project_id" th:value="${selectedProject?.id}">
+            <label class="block text-sm text-gray-400 mb-1 pt-1">название колонки</label>
+            <input type="text" name="name" required class="w-full border rounded px-3 py-2">
+            <label class="block text-sm text-gray-400 mb-1 pt-1">описание колонки</label>
+            <textarea name="description" class="w-full border rounded px-3 py-2"></textarea>
+            <div class="flex gap-2 mt-4 justify-between">
+                <button type="button" onclick="document.getElementById('modal-create-column').classList.add('hidden')" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Отмена</button>
+                <button type="submit" onclick="document.getElementById('modal-create-column').classList.add('hidden')" class="px-4 py-2 bg-green-400 text-white rounded hover:bg-green-300">Создать</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<label th:fragment="column-counter" th:text="${columns.size()}" id="column-counter" hx-swap-oob="true" class="text-sm text-gray-500"></label>
+
+<div th:fragment="info-column-modal" id="modal-info-column"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white rounded-lg shadow-lg p-6 min-w-[500px] max-h-[650px] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg ">параметры колонки</h3>
+            <button onclick="document.getElementById('modal-info-column').classList.add('hidden')" class="text-gray-500 hover:text-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form hx-put="/hx/v1/columns/update"
+              hx-target="#columns-list" hx-swap="outerHTML"
+              hx-on--after-request="document.getElementById('modal-info-column').classList.add('hidden')">
+            <div id="column-info-content" class="flex flex-col h-full"></div>
+        </form>
+    </div>
+</div>
+
+<div th:fragment="column-info-content">
+    <input type="hidden" name="project_id" th:value="${column.project.id}">
+    <input type="hidden" name="columnId" th:value="${column.id}">
+    <label class="block text-sm text-gray-400 mb-1 pt-1">название колонки</label>
+    <input type="text" name="name" class="w-full border rounded px-3 py-2" th:value="${column.name}">
+    <label class="block text-sm text-gray-400 mb-1 pt-1">описание колонки</label>
+    <textarea name="description" class="w-full border rounded px-3 py-2" th:text="${column.description}"></textarea>
+    <div class="flex gap-2 pt-2 mt-auto">
+        <img src="/calendar.svg" class="w-4 h-4 pt-1">
+        <label class="text-sm text-gray-400">дата создания:</label>
+        <label class="text-sm text-gray-400" th:text="${#temporals.format(column.createdAt, 'E, MMM d')}"></label>
+    </div>
+    <div class="flex gap-2 pt-2 mt-auto">
+        <img src="/calendar_edit.svg" class="w-4 h-4 pt-1">
+        <label class="text-sm text-gray-400">дата последнего изменения:</label>
+        <label class="text-sm text-gray-400" th:text="${column.updatedAt != null ? #temporals.format(column.updatedAt, 'E, MMM d') : '---'}"></label>
+    </div>
+    <div class="flex gap-2 mt-4 justify-between">
+        <button type="button"
+                hx-delete="/hx/v1/column/delete"
+                th:attr="hx-vals='{&quot;columnId&quot;:' + ${column.id} + '}'"
+                hx-target="#columns-list"
+                hx-swap="outerHTML"
+                hx-on--after-request="document.getElementById('modal-info-column').classList.add('hidden');"
+                class="px-4 py-2 bg-red-400 text-white rounded hover:bg-red-300">удалить</button>
+        <div class="flex gap-1">
+            <button type="button" onclick="document.getElementById('modal-info-column').classList.add('hidden')" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">отмена</button>
+            <button type="submit" class="px-4 py-2 bg-green-400 text-white rounded hover:bg-green-300">сохранить</button>
+        </div>
+    </div>
+</div>
+
+<th:block th:fragment="change-block-on-create">
+    <th:block th:replace="fragments/columns :: column-item"></th:block>
+    <th:block th:replace="fragments/columns :: column-counter"></th:block>
+</th:block>
+
+<th:block th:fragment="change-block-on-update">
+    <th:block th:replace="fragments/columns :: columns-list"></th:block>
+</th:block>

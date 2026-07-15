@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ColumnRepository extends JpaRepository<EntityColumn, Long> {
-    List<EntityColumn> findByProjectId(Long workspaceId);
+    List<EntityColumn> findByProjectId(Long projectId);
 }

@@ -1,6 +1,7 @@
 package myApp.service;
 
 import myApp.model.EntityColumn;
+import myApp.model.EntityIssue;
 import myApp.repository.ColumnRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,20 @@ public class ColumnService {
         return columnRepository.findByProjectId(id);
     }
 
+    public List<EntityColumn> getColumns() {
+        return columnRepository.findAll();
+    }
+
+    public EntityColumn getColumnById(Long columnId) {
+        return columnRepository.findById(columnId).orElse(null);
+    }
+
     public void saveColumn(EntityColumn column) {
+        column.setPosition(columnRepository.count() + 1L);
         columnRepository.save(column);
+    }
+
+    public void deleteColumnById(Long columnId) {
+        columnRepository.deleteById(columnId);
     }
 }
