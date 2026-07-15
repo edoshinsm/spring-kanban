@@ -3,6 +3,7 @@ package myApp.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +20,19 @@ public class EntityColumn {
     private Long id;
 
     @Column(nullable = false)
-    private int position;
+    private String name;
 
     @Column(nullable = false)
-    private String name;
+    private Long position;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)

@@ -27,10 +27,13 @@ public class EntityIssue {
     private String status;
 
     @Column(nullable = false)
-    private int position;
+    private Long position;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @Column(name = "due_date")
     private LocalDateTime dueDate;

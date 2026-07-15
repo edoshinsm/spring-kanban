@@ -35,5 +35,5 @@ public class EntityProject {
     private List<EntityColumn> columns = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EntityProjectMembers> members3;
+    private List<EntityProjectMembers> members = new ArrayList<>();
 }
