@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Регистрация</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen flex items-center justify-center bg-gray-50">
+<div class="bg-white p-8 rounded-lg shadow-md w-96">
+    <h2 class="text-xl font-medium mb-4 text-center">Регистрация</h2>
+    <form method="post" th:action="@{/register}" class="space-y-4">
+        <div>
+            <input type="text" name="login" autocomplete="username"
+                   class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                   placeholder="Логин" required/>
+        </div>
+        <div>
+            <input type="password" name="password" autocomplete="new-password"
+                   class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                   placeholder="Пароль" required/>
+        </div>
+        <div>
+            <input type="password" name="confirmPassword" autocomplete="new-password"
+                   class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                   placeholder="Подтверждение пароля" required/>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+            <input type="text" name="firstName" placeholder="Имя"
+                   class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+            <input type="text" name="lastName" placeholder="Фамилия"
+                   class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+        <div>
+            <input type="email" name="email" autocomplete="email"
+                   class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                   placeholder="Email">
+        </div>
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors">
+            Зарегистрироваться
+        </button>
+    </form>
+    <p class="text-sm text-gray-500 mt-4 text-center">
+        Уже есть аккаунт? <a href="/login" class="text-green-600 hover:underline">Войти</a>
+    </p>
+</div>
+</body>
+</html>

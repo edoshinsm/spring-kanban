@@ -3,9 +3,14 @@
     <h2 class="inline">канбан</h2>
   </a>
   <div class="flex items-center gap-3">
-    <span class="font-medium">едошин сергей</span>
+    <span class="font-medium" th:text="${currentUserFullName}">Имя пользователя</span>
     <img src="https://avatars.mds.yandex.net/i?id=4b6f11ebc4b5c9d3b6b9957fe8cdee12133dde76-5270099-images-thumbs&n=13"
          alt="Аватар"
          class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+    <form th:action="@{/logout}" method="post" class="m-0">
+      <button type="submit" class="text-sm text-gray-500 hover:text-red-500 transition-colors items-center">
+        <img src="/logout.svg" class="w-5 h-5">
+      </button>
+    </form>
   </div>
 </div>

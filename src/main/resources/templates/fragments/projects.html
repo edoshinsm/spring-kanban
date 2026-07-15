@@ -104,3 +104,31 @@
   <th:block th:replace="fragments/projects :: projects-list"></th:block>
   <th:block th:replace="fragments/projects :: current-project-name"></th:block>
 </th:block>
+
+<div th:fragment="members-modal" id="modal-members-project"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+  <div class="bg-white rounded-lg shadow-lg p-6 min-w-[400px] max-h-[650px] overflow-y-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg">Участники проекта</h3>
+      <button onclick="document.getElementById('modal-members-project').classList.add('hidden')" class="text-gray-500 hover:text-red-500">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div id="members-modal-content">
+    </div>
+  </div>
+</div>
+
+<div th:fragment="members-list-content">
+  <ul class="space-y-2">
+    <th:block th:each="member : ${members}">
+      <li class="flex items-center gap-2 p-2 border-b">
+        <span class="font-medium" th:text="${member.user.firstName + ' ' + member.user.lastName}"></span>
+        <span class="text-sm text-gray-500" th:text="'(' + ${member.user.email} + ')'"></span>
+        <span class="ml-auto text-xs px-2 py-1 rounded-full bg-gray-100" th:text="${member.role}"></span>
+      </li>
+    </th:block>
+  </ul>
+</div>

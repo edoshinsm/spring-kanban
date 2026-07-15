@@ -6,15 +6,24 @@
 </head>
 <body class="h-screen flex items-center justify-center bg-gray-50">
 <div class="bg-white p-8 rounded-lg shadow-md w-80">
-    <form action="/login" method="post" class="space-y-4">
+    <form method="post" th:action="@{/login}" class="space-y-4">
         <div>
-            <input type="text" name="username" class="w-full mt-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="user"/>
+            <input type="text" name="username" autocomplete="username"
+                   class="w-full mt-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                   placeholder="Логин" required/>
         </div>
         <div>
-            <input type="password" name="password" class="w-full mt-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="1"/>
+            <input type="password" name="password" autocomplete="current-password"
+                   class="w-full mt-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                   placeholder="Пароль" required/>
         </div>
-        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors">Войти</button>
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors">
+            Войти
+        </button>
     </form>
+    <p class="text-sm text-gray-500 mt-4 text-center">
+        Нет аккаунта? <a href="/register" class="text-green-600 hover:underline">Зарегистрироваться</a>
+    </p>
 </div>
 </body>
 </html>
