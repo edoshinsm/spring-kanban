@@ -81,4 +81,26 @@ public class ProjectController {
         model.addAttribute("members", members);
         return "fragments/projects :: members-list-content";
     }
+
+    @PostMapping("/hx/v1/projects/join")
+    public String joinProject(@RequestParam("inviteCode") String inviteCode,
+                              Model model,
+                              Authentication authentication) {
+        String username = authentication.getName();
+        EntityUser currentUser = userService.findByUsername(username);
+
+        EntityProject project = projectService.getProjectByInviteCode(inviteCode.trim().toUpperCase());
+        if (project == null) {
+            model.addAttribute("projects", projectService.getProjectsByUserId(currentUser.getId()));
+            return "fragments/projects :: projects-list";
+        }
+
+        if (!projectService.isUserMemberOfProject(project.getId(), currentUser.getId())) {
+            projectService.addMember(project.getId(), currentUser.getId());
+        }
+
+        List<EntityProject> userProjects = projectService.getProjectsByUserId(currentUser.getId());
+        model.addAttribute("projects", userProjects);
+        return "fragments/projects :: projects-list";
+    }
 }

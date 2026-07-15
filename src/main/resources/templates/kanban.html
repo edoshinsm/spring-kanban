@@ -24,7 +24,7 @@
                             class="transition-colors p-1 rounded-md hover:bg-gray-100 text-gray-500 hover:text-green-600">
                         <img src="/plus.svg" class="w-5 h-5">
                     </button>
-                    <button onclick="document.getElementById('modal-create-project').classList.remove('hidden')"
+                    <button onclick="document.getElementById('modal-join-project').classList.remove('hidden')"
                             class="transition-colors p-1 rounded-md hover:bg-gray-100 text-gray-500 hover:text-green-600">
                         <img src="/link_plus.svg" class="w-5 h-5">
                     </button>
@@ -108,5 +108,6 @@
 <div th:insert="~{fragments/columns :: create-column-modal}"></div>
 <div th:insert="~{fragments/issues :: create-issue-modal}"></div>
 <div th:insert="~{fragments/projects :: members-modal}"></div>
+<div th:insert="~{fragments/projects :: join-project-modal}"></div>
 </body>
 </html>

@@ -66,6 +66,10 @@ public class ProjectService {
         }
     }
 
+    public EntityProject getProjectByInviteCode(String inviteCode) {
+        return projectRepository.findByInviteCode(inviteCode).orElse(null);
+    }
+
     public List<EntityProjectMembers> getProjectMembers(Long projectId) {
         return projectMemberRepository.findByProjectId(projectId);
     }

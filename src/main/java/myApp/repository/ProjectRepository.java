@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface ProjectRepository extends JpaRepository<EntityProject, Long> {
     Optional<EntityProject> findById(Long id);
+    Optional<EntityProject> findByInviteCode(String inviteCode);
 }
