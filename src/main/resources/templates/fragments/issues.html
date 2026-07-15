@@ -1,0 +1,133 @@
+<label th:fragment="issue-counter" th:text="${allIssues.size()}" id="issue-counter"
+       hx-swap-oob="true" class="text-sm text-gray-500"></label>
+
+<div th:fragment="issue-list(columnId, issues)" th:id="'issue-list-' + ${columnId}">
+    <div th:id="'issue-list-inner-' + ${columnId}">
+        <div th:each="issue : ${issues}">
+            <div th:insert="~{fragments/issues :: issue-item}"></div>
+        </div>
+        <div th:if="${#lists.isEmpty(issues)}" class="text-gray-400 text-sm pl-2">
+            нет задач
+        </div>
+    </div>
+</div>
+
+<div th:fragment="issue-item"
+     class="flex flex-col p-2 rounded hover:bg-gray-100 transition-colors border-b border-gray-200 h-[7rem]"
+     th:data-issue-id="${issue.id}"
+     th:data-column-id="${issue.column.id}"
+     ondblclick="openIssueInfoModal(this.dataset.issueId)">
+
+    <span class="font-medium break-words truncate min-w-0" th:text="${issue.name}">ЗАДАЧА</span>
+    <div class="flex-1">
+        <span class="text-sm text-gray-400 line-clamp-2 text-justify break-words" th:text="${issue.description}">ОПИСАНИЕ</span>
+    </div>
+    <div class="flex gap-2 pt-2 mt-auto justify-between">
+        <div class="flex gap-1 items-center">
+            <img src="/calendar.svg" class="w-4 h-4 pt-1">
+            <span class="text-sm text-gray-400" th:text="${#temporals.format(issue.createdAt, 'E, MMM d')}"></span>
+        </div>
+        <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full" th:text="${issue.status}"></span>
+    </div>
+</div>
+
+<div th:fragment="create-issue-modal" id="modal-create-issue"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white rounded-lg shadow-lg p-6 min-w-[500px] max-h-[650px] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg">новая задача</h3>
+            <button onclick="document.getElementById('modal-create-issue').classList.add('hidden')"
+                    class="text-gray-500 hover:text-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <form hx-post="/hx/v1/issues/new"
+              hx-swap="none"
+              hx-on:after-request="this.reset(); document.getElementById('modal-create-issue').classList.add('hidden'); htmx.process(document.body);">
+            <input type="hidden" name="column_id">
+            <input type="hidden" name="project_id" th:value="${selectedProject?.id}">
+            <label class="block text-sm text-gray-400 mb-1 pt-1">название задачи</label>
+            <input type="text" name="name" required class="w-full border rounded px-3 py-2">
+            <label class="block text-sm text-gray-400 mb-1 pt-1">описание задачи</label>
+            <textarea name="description" class="w-full border rounded px-3 py-2"></textarea>
+            <div class="flex gap-2 mt-4 justify-between">
+                <button type="button" onclick="document.getElementById('modal-create-issue').classList.add('hidden')"
+                        class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Отмена</button>
+                <button type="submit" class="px-4 py-2 bg-green-400 text-white rounded hover:bg-green-300">Создать</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:fragment="info-issue-modal" id="modal-info-issue"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white rounded-lg shadow-lg p-6 min-w-[500px] max-h-[650px] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg">параметры задачи</h3>
+            <button onclick="document.getElementById('modal-info-issue').classList.add('hidden')"
+                    class="text-gray-500 hover:text-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div id="issue-info-content" class="flex flex-col h-full"></div>
+    </div>
+</div>
+
+<form th:fragment="issue-info-content"
+      hx-put="/hx/v1/issues/update"
+      th:attr="hx-target='#issue-list-' + ${issue.column.id}"
+      hx-swap="outerHTML"
+      hx-on:after-request="document.getElementById('modal-info-issue').classList.add('hidden')">
+
+    <input type="hidden" name="issueId" th:value="${issue.id}">
+    <input type="hidden" name="column_id" th:value="${issue.column.id}">
+    <input type="hidden" name="project_id" th:value="${issue.column.project.id}">
+
+    <label class="block text-sm text-gray-400 mb-1 pt-1">название задачи</label>
+    <input type="text" name="name" class="w-full border rounded px-3 py-2" th:value="${issue.name}">
+    <label class="block text-sm text-gray-400 mb-1 pt-1">описание</label>
+    <textarea name="description" class="w-full border rounded px-3 py-2" th:text="${issue.description}"></textarea>
+    <label class="block text-sm text-gray-400 mb-1 pt-1">статус</label>
+    <input type="text" name="status" class="w-full border rounded px-3 py-2" th:value="${issue.status}">
+    <label class="block text-sm text-gray-400 mb-1 pt-1">срок выполнения</label>
+    <input type="datetime-local" name="dueDate" class="w-full border rounded px-3 py-2"
+           th:value="${issue.dueDate != null ? #temporals.format(issue.dueDate, 'yyyy-MM-dd''T''HH:mm') : ''}">
+
+    <div class="flex gap-2 pt-2 mt-auto">
+        <img src="/calendar.svg" class="w-4 h-4 pt-1">
+        <label class="text-sm text-gray-400">дата создания:</label>
+        <label class="text-sm text-gray-400" th:text="${#temporals.format(issue.createdAt, 'E, MMM d')}"></label>
+    </div>
+    <div class="flex gap-2 mt-4 justify-between">
+        <button type="button"
+                hx-delete="/hx/v1/issue/delete"
+                th:attr="hx-vals='{&quot;issueId&quot;:' + ${issue.id} + ', &quot;column_id&quot;:' + ${issue.column.id} + ', &quot;project_id&quot;:' + ${issue.column.project.id} + '}',
+                 hx-target='#issue-list-' + ${issue.column.id}"
+                hx-swap="outerHTML"
+                hx-on:after-request="document.getElementById('modal-info-issue').classList.add('hidden');"
+                class="px-4 py-2 bg-red-400 text-white rounded hover:bg-red-300">удалить</button>
+        <div class="flex gap-1">
+            <button type="button" onclick="document.getElementById('modal-info-issue').classList.add('hidden')"
+                    class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">отмена</button>
+            <button type="submit" class="px-4 py-2 bg-green-400 text-white rounded hover:bg-green-300">сохранить</button>
+        </div>
+    </div>
+</form>
+
+<th:block th:fragment="change-block-on-create">
+    <div th:attr="hx-swap-oob='beforeend:#issue-list-' + ${issue.column.id}">
+        <th:block th:replace="fragments/issues :: issue-item"></th:block>
+    </div>
+    <th:block th:replace="fragments/issues :: issue-counter"></th:block>
+</th:block>
+
+<th:block th:fragment="change-block-on-update(columnId, issues)">
+    <th:block th:replace="fragments/issues :: issue-list(columnId=${columnId}, issues=${issues})"></th:block>
+    <th:block th:replace="fragments/issues :: issue-counter"></th:block>
+</th:block>
