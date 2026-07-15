@@ -19,10 +19,16 @@
         <div class="w-[240px] flex-shrink-0 border-r border-gray-200 overflow-y-auto">
             <div class="flex justify-between items-center px-3 pt-2">
                 <span class="text-gray-400 text-sm font-medium">проекты</span>
-                <button onclick="document.getElementById('modal-create-project').classList.remove('hidden')"
-                        class="transition-colors p-1 rounded-md hover:bg-gray-100 text-gray-500 hover:text-green-600">
-                    <img src="/plus.svg" class="w-5 h-5">
-                </button>
+                <div class="flex gap-1 items-center">
+                    <button onclick="document.getElementById('modal-create-project').classList.remove('hidden')"
+                            class="transition-colors p-1 rounded-md hover:bg-gray-100 text-gray-500 hover:text-green-600">
+                        <img src="/plus.svg" class="w-5 h-5">
+                    </button>
+                    <button onclick="document.getElementById('modal-create-project').classList.remove('hidden')"
+                            class="transition-colors p-1 rounded-md hover:bg-gray-100 text-gray-500 hover:text-green-600">
+                        <img src="/link_plus.svg" class="w-5 h-5">
+                    </button>
+                </div>
             </div>
             <div th:fragment="projects-list">
                 <div id="project-list" class="space-y-1">

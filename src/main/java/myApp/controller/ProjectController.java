@@ -75,7 +75,9 @@ public class ProjectController {
 
     @GetMapping("/hx/v1/projects/members")
     public String getProjectMembers(@RequestParam("projectId") Long projectId, Model model) {
+        EntityProject project = projectService.getProjectById(projectId);
         List<EntityProjectMembers> members = projectService.getProjectMembers(projectId);
+        model.addAttribute("project", project);
         model.addAttribute("members", members);
         return "fragments/projects :: members-list-content";
     }

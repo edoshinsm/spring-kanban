@@ -122,9 +122,17 @@
 </div>
 
 <div th:fragment="members-list-content">
+  <!-- Код приглашения -->
+  <div class="mb-4 p-3 flex items-center justify-between">
+    <div>
+      <span class="text-sm text-gray-500">Код приглашения:</span>
+      <span class="ml-2 font-mono font-bold text-lg" th:text="${project.inviteCode}"></span>
+    </div>
+  </div>
+
   <ul class="space-y-2">
     <th:block th:each="member : ${members}">
-      <li class="flex items-center gap-2 p-2 border-b">
+      <li class="flex items-center gap-2 p-2 border-b border-gray-100">
         <span class="font-medium" th:text="${member.user.firstName + ' ' + member.user.lastName}"></span>
         <span class="text-sm text-gray-500" th:text="'(' + ${member.user.email} + ')'"></span>
         <span class="ml-auto text-xs px-2 py-1 rounded-full bg-gray-100" th:text="${member.role}"></span>
