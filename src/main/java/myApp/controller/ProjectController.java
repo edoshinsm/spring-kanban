@@ -1,7 +1,10 @@
 package myApp.controller;
 
 import myApp.model.EntityProject;
+import myApp.model.EntityUser;
 import myApp.service.ProjectService;
+import myApp.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,18 +14,29 @@ import java.time.LocalDateTime;
 @Controller
 public class ProjectController {
     private final ProjectService projectService;
+    private final UserService userService;
 
-    ProjectController(ProjectService projectService) {
+    ProjectController(ProjectService projectService, UserService userService) {
+        this.userService = userService;
         this.projectService = projectService;
     }
 
     @PostMapping("/hx/v1/projects/new")
-    public String createProject(@RequestParam("name") String name, @RequestParam("description") String description, Model model) {
+    public String createProject(@RequestParam("name") String name,
+                                @RequestParam("description") String description,
+                                Model model,
+                                Authentication authentication) {
+        String username = authentication.getName();
+        EntityUser currentUser = userService.findByUsername(username);
+
         EntityProject project = new EntityProject();
         project.setName(name);
         project.setDescription(description);
         project.setCreatedAt(LocalDateTime.now());
         projectService.saveProject(project);
+
+        projectService.addMember(project.getId(), currentUser.getId());
+
         model.addAttribute("project", project);
         return "fragments/projects :: project-item";
     }
@@ -47,10 +61,11 @@ public class ProjectController {
         model.addAttribute("projects", projectService.getProjects());
         model.addAttribute("selectedProject", projectService.getProjectById(projectId));
 
-        return "fragments/projects :: projects-list";
+        return "fragments/projects :: change-block-on-update";
     }
 
     @DeleteMapping("hx/v1/projects/delete")
+    @ResponseBody
     public String deleteProject(@RequestParam("projectId") Long projectId, Model model) {
         projectService.deleteProject(projectId);
         return "";

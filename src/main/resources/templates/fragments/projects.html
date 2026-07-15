@@ -14,6 +14,8 @@
   <span class="font-medium truncate" th:text="${project.name}">НОВЫЙ ПРОЕКТ</span>
 </a>
 
+<h2 th:fragment="current-project-name" id="current-project-name" hx-swap-oob="true" class="text-3xl pr-2 min-w-0 max-w-[600px] truncate" th:text="${selectedProject.name}">ТЕКУЩЕЕ ИМЯ ПРОЕКТА</h2>
+
 <div th:fragment="create-project-modal" id="modal-create-project"
      class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
      xmlns:hx-on="http://www.w3.org/1999/xhtml">
@@ -26,14 +28,20 @@
         </svg>
       </button>
     </div>
-    <form hx-post="/hx/v1/projects/new" hx-target="#project-list" hx-swap="beforeend" hx-on:after-request="this.reset(); document.getElementById('modal-create-project').classList.add('hidden')">
+    <form hx-post="/hx/v1/projects/new"
+          hx-target="#project-list"
+          hx-swap="beforeend"
+          hx-on:after-request="this.reset(); document.getElementById('modal-create-project').classList.add('hidden');">
       <label class="block text-sm text-gray-400 mb-1 pt-1">название проекта</label>
       <input type="text" name="name" required class="w-full border rounded px-3 py-2">
       <label class="block text-sm text-gray-400 mb-1 pt-1">описание проекта</label>
-      <textarea type="text" name="description" class="w-full border rounded px-3 py-2"></textarea>
+      <textarea name="description" class="w-full border rounded px-3 py-2"></textarea>
       <div class="flex gap-2 mt-4 justify-between">
-        <button type="button" onclick="document.getElementById('modal-create-project').classList.add('hidden')" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">отмена</button>
-        <button type="submit" class="px-4 py-2 bg-green-400 text-white rounded hover:bg-green-300">создать</button>
+        <button type="button"
+                onclick="document.getElementById('modal-create-project').classList.add('hidden')"
+                class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">отмена</button>
+        <button type="submit"
+                class="px-4 py-2 bg-green-400 text-white rounded hover:bg-green-300">создать</button>
       </div>
     </form>
   </div>
@@ -91,3 +99,8 @@
     <label class="text-sm text-gray-400" th:text="${project.updatedAt != null ? #temporals.format(project.updatedAt, 'E, MMM d') : '---'}"></label>
   </div>
 </div>
+
+<th:block th:fragment="change-block-on-update">
+  <th:block th:replace="fragments/projects :: projects-list"></th:block>
+  <th:block th:replace="fragments/projects :: current-project-name"></th:block>
+</th:block>
