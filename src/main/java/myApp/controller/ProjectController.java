@@ -1,6 +1,7 @@
 package myApp.controller;
 
 import myApp.model.EntityProject;
+import myApp.model.EntityProjectMembers;
 import myApp.model.EntityUser;
 import myApp.service.ProjectService;
 import myApp.service.UserService;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 public class ProjectController {
@@ -69,5 +71,12 @@ public class ProjectController {
     public String deleteProject(@RequestParam("projectId") Long projectId, Model model) {
         projectService.deleteProject(projectId);
         return "";
+    }
+
+    @GetMapping("/hx/v1/projects/members")
+    public String getProjectMembers(@RequestParam("projectId") Long projectId, Model model) {
+        List<EntityProjectMembers> members = projectService.getProjectMembers(projectId);
+        model.addAttribute("members", members);
+        return "fragments/projects :: members-list-content";
     }
 }

@@ -66,4 +66,7 @@ public class ProjectService {
         }
     }
 
+    public List<EntityProjectMembers> getProjectMembers(Long projectId) {
+        return projectMemberRepository.findByProjectId(projectId);
+    }
 }
